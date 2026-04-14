@@ -1,31 +1,24 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+const authRoutes = require('./routes/auth');
 
 const app = express();
-
-// Middleware
 app.use(express.json());
-app.use(cors()); // Ye frontend aur backend ke darmiyan connection allow karta hai
+app.use(cors({ origin: 'http://localhost:5173' }));
 
-// --- ROUTES ---
-const authRoutes = require('./routes/auth'); 
-const tutorRoutes = require('./routes/Tutor'); 
-
-// Professional Plural Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/tutors', tutorRoutes); // Ab ye '/api/tutors' ho gaya hai
-
-// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB Connected!");
-    console.log("🚀 Server Ready on 5000");
-  })
-  .catch(err => console.log("❌ MongoDB Error:", err));
+    .then(() => {
+        console.log("✅ MongoDB Atlas Connected Successfully!");
+        console.log("📂 Database Name: TutorHub");
+    })
+    .catch(err => {
+        console.error("❌ DB Error:", err.message);
+    });
+
+app.use('/api/auth', authRoutes);
 
 const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
