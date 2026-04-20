@@ -201,7 +201,20 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-// 10. SEND MESSAGE
+// 10. ✅ DELETE BOOKING — naya route add kiya
+router.delete('/bookings/delete/:id', async (req, res) => {
+    try {
+        const deleted = await Booking.findByIdAndDelete(req.params.id);
+        if (!deleted) {
+            return res.status(404).json({ message: "Booking not found!" });
+        }
+        res.status(200).json({ message: "Booking deleted successfully!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 11. SEND MESSAGE
 router.post('/messages/send', async (req, res) => {
     try {
         const { senderId, receiverId, message } = req.body;
@@ -218,7 +231,7 @@ router.post('/messages/send', async (req, res) => {
     }
 });
 
-// 11. GET MESSAGES
+// 12. GET MESSAGES
 router.get('/messages/:userId/:otherUserId', async (req, res) => {
     try {
         const { userId, otherUserId } = req.params;
